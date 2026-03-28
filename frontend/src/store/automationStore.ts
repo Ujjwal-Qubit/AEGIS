@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 
-const API_BASE_URL = 'http://localhost:8002/automations';
+import { API_BASE } from '../lib/api';
+const API_BASE_URL = `${API_BASE}/automations`;
 
 export interface DeployedAutomation {
   id: string;

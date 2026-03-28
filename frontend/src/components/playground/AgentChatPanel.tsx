@@ -10,6 +10,7 @@ import {
   AlertTriangle, ShieldCheck, RefreshCw
 } from 'lucide-react';
 import { useAgentWallet } from '../../hooks/useAgentWallet';
+import { API_BASE } from '../../lib/api';
 import { cn } from '../../lib/utils/cn';
 import { useState, useRef, useEffect } from 'react';
 
@@ -40,7 +41,7 @@ export function AgentChatPanel() {
       if (!agentWalletAddress) return;
       try {
         const executor = await getExecutor();
-        const resp = await fetch('http://localhost:8002/automations/executor/address').then(r => r.json());
+        const resp = await fetch(`${API_BASE}/automations/executor/address`, { credentials: 'include' }).then(r => r.json());
         setIsAuthorized(executor?.toLowerCase() === resp.address?.toLowerCase());
       } catch (e) {
         console.error("Auth check failed", e);

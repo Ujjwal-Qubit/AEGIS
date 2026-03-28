@@ -12,6 +12,7 @@ import { formatEth } from '../lib/utils/format';
 import { cleanWeb3Error } from '../lib/utils/errors';
 import { useToast } from './useToast';
 import { MONAD_TESTNET_ID } from '../lib/config/chains';
+import { API_BASE } from '../lib/api';
 
 
 export function useAgentWallet() {
@@ -200,7 +201,7 @@ export function useAgentWallet() {
     addLog({ type: 'info', message: 'Fetching platform executor address...' });
 
     try {
-      const response = await fetch('http://localhost:8002/automations/executor/address');
+      const response = await fetch(`${API_BASE}/automations/executor/address`, { credentials: 'include' });
       const data = await response.json();
 
       if (!data.address) {

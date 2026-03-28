@@ -6,6 +6,7 @@ import { useChainId } from 'wagmi';
 import { useState, useEffect } from 'react';
 import { cn } from '../../lib/utils/cn';
 import { Button } from '../ui/UIPack';
+import { API_BASE } from '../../lib/api';
 import type { Address } from 'viem';
 
 export function AgentWalletCard() {
@@ -25,7 +26,7 @@ export function AgentWalletCard() {
       if (!agentWalletAddress) return;
       const [executor, resp] = await Promise.all([
         getExecutor(),
-        fetch('http://localhost:8002/automations/executor/address').then(r => r.json()).catch(() => ({ address: null }))
+        fetch(`${API_BASE}/automations/executor/address`, { credentials: 'include' }).then(r => r.json()).catch(() => ({ address: null }))
       ]);
       setCurrentExecutor(executor);
       setPlatformAddress(resp.address);
