@@ -1,0 +1,30 @@
+﻿python : INFO:     Started 
+server process [30616]
+At line:1 char:31
++ ... hon 
+schedule_final_job.py; python 
+main.py 2> stderr.log 1> 
+stdout.log
++                              
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~
+    + CategoryInfo          :  
+   NotSpecified: (INFO:     S  
+  tarted server process [306   
+ 16]:String) [], RemoteExce    
+ption
+    + FullyQualifiedErrorId :  
+   NativeCommandError
+ 
+INFO:     Waiting for 
+application startup.
+INFO:     Application startup 
+complete.
+INFO:     Uvicorn running on 
+http://0.0.0.0:8002 (Press 
+CTRL+C to quit)
+Run time of job "AEGIS 
+Automation 1903e4d7 (trigger: 
+interval[0:01:00], next run 
+at: 2026-03-27 12:10:13 IST)" 
+was missed by 0:00:46.575641

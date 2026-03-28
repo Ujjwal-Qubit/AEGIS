@@ -51,5 +51,5 @@ DEMO_MODE = os.getenv("AEGIS_DEMO_MODE", "true").lower() == "true"
 # =========================================================
 # RPC defaults (used by execution_service when spec doesn't provide one)
 # =========================================================
-DEFAULT_RPC_URL = os.getenv("RPC_URL", "https://data-seed-prebsc-1-s1.bnbchain.org:8545")
-DEFAULT_CHAIN = os.getenv("DEFAULT_CHAIN", "bsc-testnet")
+DEFAULT_RPC_URL = os.getenv("RPC_URL", "https://testnet-rpc.monad.xyz")
+DEFAULT_CHAIN = os.getenv("DEFAULT_CHAIN", "monad-testnet")

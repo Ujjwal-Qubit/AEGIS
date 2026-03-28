@@ -175,15 +175,21 @@ Return:
 
 ## IMPORTANT RULES:
 1. ALWAYS respond with valid JSON only. No markdown, no code fences, no extra text.
-2. For automation intents, be smart about mapping and TECHNICAL completeness. For example:
+2. **ZERO-PLACEHOLDER RULE**: NEVER invent values or use placeholders like `[[current_time_plus_2_minutes]]`, `[[HH:MM]]`, or `0x...` for missing fields. If a field is required in the catalogue and the user hasn't provided it, you MUST mark it as missing and ASK the user.
+3. For automation intents, be smart about mapping and TECHNICAL completeness. For example:
    - "swap ETH to USDC" → ask for the DEX name AND the router address.
    - "mint an NFT" → ask for the contract address AND the mint function signature.
-3. Extract as many field values as possible from the user's natural language.
-4. For missing fields, generate friendly but technically accurate questions.
-5. For "select" type fields with options, include the options array.
-6. When a user mentions a token like BNB, ETH, USDC — extract it as both "token" and "asset".
-7. Be conversational in your messages, but maintain a high degree of Web3 technical accuracy.
-8. NEVER pretend a protocol is "ready to go" if we need a contract address. Be honest about TODO fragments."""
+4. Extract as many field values as possible from the user's natural language.
+5. For missing fields, generate friendly but technically accurate questions.
+6. For "select" type fields with options, include the options array.
+7. When a user mentions a token like BNB, ETH, USDC — extract it as both "token" and "asset".
+8. Be conversational in your messages, but maintain a high degree of Web3 technical accuracy.
+9. NEVER pretend a protocol is "ready to go" if we need a contract address. Be honest about TODO fragments.
+10. **TIME & DATE PRECISION**: For time-based triggers, ALWAYS ask for the exact time (HH:MM) and date. Do NOT assume "now" or "in 2 minutes" unless the user explicitly says so.
+11. **MONAD TOKEN (MON)**: MON is the **native gas token** on Monad Testnet.
+    - If a user wants to send "MON" or "monads" — ALWAYS use `send_native_token`.
+    - NEVER use `send_erc20` for MON.
+    - If the user says "MON", force the chain to "Monad Testnet" and the RPC to "https://testnet-rpc.monad.xyz"."""
 
     def list_available_models(self) -> List[Dict[str, Union[str, bool]]]:
         return [{"id": mid, "label": str(cfg["label"]), "active": bool(os.getenv(str(cfg["api_key_env"])))} for mid, cfg in self.models.items()]
@@ -316,6 +322,10 @@ Return:
     # CONTINUE CHAT (follow-up field submissions)
     # ==========================================================
     def continue_chat(self, session_id: str, fields: Dict[str, Any], planning_model_id: str = "gemini_flash") -> Dict[str, Any]:
+        if session_id not in _sessions:
+            # Session lost after restart - gracefully transition back to a new chat
+            return self.chat("I'm back! Let's resume where we left off.", session_id, known_fields=fields, planning_model_id=planning_model_id)
+
         session = _sessions[session_id]
         session["known_fields"].update(fields)
 
@@ -455,7 +465,7 @@ Generate these files and return them as a JSON object (filename: content):
         3. "config.json" (Runtime Configuration):
     - A runtime-ready JSON structure using nested objects for clarity.
     - Project Name: "{fields.get('name', 'Automation Project')}"
-    - CHAIN & RPC: If 'tbnb' or 'bsc' is mentioned, YOU MUST set chain.name to "BSC Testnet" and chain.rpc to "https://data-seed-prebsc-1-s1.bnbchain.org:8545".
+    - CHAIN & RPC: If 'mon' or 'monad' is mentioned, YOU MUST set chain.name to "Monad Testnet" and chain.rpc to "https://testnet-rpc.monad.xyz".
     - ACTIONS: Include ALL requested actions: {json.dumps(action_types)}.
     - MUST CLEAN ACTION PARAMS: Only include fields relevant to each specific action. For 'send_native_token', ONLY include 'recipient_address' and 'amount'. For 'send_email_notification', ONLY include 'to', 'subject', and 'message'. Do NOT put trigger-only fields like 'date' or 'timezone' into action params.
     - DATES: Use the extracted 'date' and 'time' for the trigger. If 'date' is 'today', keep it as 'today' (the engine now resolves this).
@@ -463,7 +473,7 @@ Generate these files and return them as a JSON object (filename: content):
       {{
         "name": "{fields.get('name', 'Automation Project')}",
         "spec_id": "{spec['id']}",
-        "chain": {{ "name": "BSC Testnet", "rpc": "https://data-seed-prebsc-1-s1.bnbchain.org:8545" }},
+        "chain": {{ "name": "Monad Testnet", "rpc": "https://testnet-rpc.monad.xyz" }},
         "wallet": {{ "address": "{fields.get('wallet_address', '')}" }},
         "trigger": {{ "type": "{trigger_type}", "params": {{ "date": "today", "time": "22:30", "timezone": "IST" }} }},
         "actions": [
@@ -494,7 +504,7 @@ IMPORTANT: Do not generate misleading "fully working" code for protocols we don'
             files = self._extract_json(raw_text)
             if files and isinstance(files, dict):
                 # Programmatic Normalization: 
-                # If chain is unknown but tbnb/bsc is mentioned, force BSC Testnet.
+                # If chain is unknown but mon/monad is mentioned, force Monad Testnet.
                 config_json = files.get("config.json")
                 if isinstance(config_json, str):
                     try:
@@ -504,18 +514,18 @@ IMPORTANT: Do not generate misleading "fully working" code for protocols we don'
                         token = str(params.get("token", "")).lower()
                         asset = str(params.get("asset", "")).lower()
                         
-                        # Broad Normalization: Force BSC if mentioned OR if name is unknown OR if rpc is empty
-                        needs_bsc = (
-                            token in ["tbnb", "bnb", "bsc"] or 
-                            asset in ["tbnb", "bnb", "bsc"] or
+                        # Broad Normalization: Force Monad if mentioned OR if name is unknown OR if rpc is empty
+                        needs_monad = (
+                            token in ["mon", "monad"] or 
+                            asset in ["mon", "monad"] or
                             chain_info.get("name") == "unknown" or
                             not chain_info.get("rpc")
                         )
                         
-                        if needs_bsc:
+                        if needs_monad:
                             config_data["chain"] = {
-                                "name": "BSC Testnet",
-                                "rpc": "https://data-seed-prebsc-1-s1.bnbchain.org:8545"
+                                "name": "Monad Testnet",
+                                "rpc": "https://testnet-rpc.monad.xyz"
                             }
                             files["config.json"] = json.dumps(config_data, indent=2)
                     except Exception:
@@ -707,6 +717,20 @@ if __name__ == "__main__":
     main()
 '''.replace("{spec_id}", spec_id)
 
+        # Clean parameters for trigger and actions
+        all_params = spec["params"]
+        
+        # Trigger specific params
+        trigger_params = {}
+        if trigger_type in ["run_once_at_datetime", "run_daily_at_time", "run_between_time_window", "run_weekly_on_day_time", "run_monthly_on_date_time"]:
+            trigger_params = {k: all_params[k] for k in ["date", "time", "timezone", "weekday", "day_of_month", "start_time", "end_time"] if k in all_params}
+        elif trigger_type in ["wallet_balance_below", "wallet_balance_above"]:
+            trigger_params = {k: all_params[k] for k in ["token", "asset", "threshold"] if k in all_params}
+        elif trigger_type in ["token_price_below", "token_price_above"]:
+             trigger_params = {k: all_params[k] for k in ["asset", "token", "quote_currency", "threshold", "price_source"] if k in all_params}
+        else:
+            trigger_params = all_params.copy()
+
         # Structured configuration matching the prompt requirement
         config_data = {
             "spec_id": spec_id,
@@ -719,12 +743,12 @@ if __name__ == "__main__":
             },
             "trigger": {
                 "type": trigger_type,
-                "params": spec["params"]
+                "params": trigger_params
             },
             "actions": [
                 {
                     "type": atype,
-                    "params": spec["params"],
+                    "params": {k: all_params[k] for k in ["recipient_address", "amount", "to", "subject", "message", "token", "asset"] if k in all_params},
                     "integration": {
                         "// TODO": "Replace with router_address, nft_contract, or faucet_url for this action"
                     }
@@ -760,7 +784,7 @@ The generated code provided the orchestration logic, but protocol-specific detai
             "config.json": json.dumps(config_data, indent=2),
             "requirements.txt": "web3\nrequests\npython-dotenv\nschedule",
             "README.md": readme,
-            ".env.example": "# AEGIS Node Secrets\n# IMPORTANT: This is for the EXECUTOR NODE, NEVER enter your main wallet seed/key here!\nEXECUTOR_PRIVATE_KEY=\nRPC_URL=\nWALLET_ADDRESS=\n"
+            ".env.example": "# AEGIS Node Secrets\n# IMPORTANT: Use the PLATFORM_EXECUTOR_ADDRESS for secure execution.\n# This local .env is for advanced users running their own node infrastructure.\nRPC_URL=https://testnet-rpc.monad.xyz\nWALLET_ADDRESS=\n"
         }
 
     # ==========================================================

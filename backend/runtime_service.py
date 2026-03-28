@@ -160,12 +160,23 @@ def evaluate_automation(automation_id: str) -> Dict[str, Any]:
     # Wallet address with fallback to trigger params
     wallet_address = wallet_info.get("address") or trigger_params.get("wallet_address") or spec.get("params", {}).get("wallet_address", "") or os.getenv("WALLET_ADDRESS", "")
 
+    # Handle creation time for dynamic placeholders (e.g. [[current_time_plus_2_minutes]])
+    created_at_dt = None
+    if record.created_at:
+        try:
+            # fromisoformat handles 'Z' and offset formats
+            created_at_str = record.created_at.replace("Z", "+00:00")
+            created_at_dt = datetime.fromisoformat(created_at_str)
+        except Exception:
+            pass
+
     ctx = TriggerContext(
         chain=chain,
         rpc_url=rpc_url,
         wallet_address=wallet_address,
         now=datetime.now(timezone.utc),
         memory={},
+        automation_created_at=created_at_dt,
     )
 
     # Defensive validation: Log if wallet_address is missing for known sensitive triggers

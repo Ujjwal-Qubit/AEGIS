@@ -1,0 +1,51 @@
+﻿DEBUG: GEMINI_API_KEY found: AIzaSyBAuC...
+[AEGIS Scheduler] Started.
+[AEGIS Scheduler] Scheduled automation 1903e4d7 every 60s
+[AEGIS Worker] Loaded 1 active automation(s).
+[AEGIS Worker] Started. Polling every 30s.
+[AEGIS API] Worker auto-started.
+[AEGIS DEBUG] evaluating run_once_at_datetime for wallet 0x29965dc7fc66374d6df1939b7d37d8706621b8c9 on BSC Testnet
+[AEGIS DEBUG] [1903e4d7] trigger_check: automation checked condition
+INFO:     127.0.0.1:64368 - "GET /automations/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64368 - "GET /automations/ HTTP/1.1" 200 OK
+[AEGIS DEBUG] evaluating run_once_at_datetime for wallet 0x29965dc7fc66374d6df1939b7d37d8706621b8c9 on BSC Testnet
+[AEGIS DEBUG] [1903e4d7] trigger_check: automation checked condition
+[AEGIS INFO] [1903e4d7] trigger_matched: automation live
+[AEGIS INFO] [1903e4d7] action_start: Executing action 1/1: send_native_token
+[AEGIS] Executing action_send_native_token (amount: 0.0001)
+[AEGIS PREFLIGHT] Starting transaction pre-flight checks...
+[AEGIS PREFLIGHT] Executor EOA: 0xFb63ec4de9354cE2b143b372813Be99680f6880f
+[AEGIS PREFLIGHT] Agent Wallet: 0x29965dc7fC66374D6dF1939B7D37d8706621b8C9
+[AEGIS PREFLIGHT] Recipient: 0xaf2F12A3497bc5B74896E943645A8FEFdeD378e3
+[AEGIS PREFLIGHT] Amount: 0.0001 ETH (100000000000000 wei)
+[AEGIS PREFLIGHT] RPC: https://data-seed-prebsc-1-s1.bnbchain.org:8545
+[AEGIS PREFLIGHT] Chain ID: 97
+[AEGIS PREFLIGHT] Authorized Executor on-chain: 0xFb63ec4de9354cE2b143b372813Be99680f6880f
+[AEGIS PREFLIGHT] Wallet Paused State: False
+[AEGIS PREFLIGHT] Agent Wallet Balance: 0.0009 ETH
+[AEGIS PREFLIGHT] Executor EOA Balance (for Gas): 0.0099686396 ETH
+[AEGIS PREFLIGHT] Estimated Gas: 54012, Using Limit: 64814
+[AEGIS EXECUTION] Signing transaction...
+[AEGIS EXECUTION] Sending transaction to mempool...
+[AEGIS EXECUTION] Transaction sent! Hash: 0x0394f4ab52fa672639ea5e4b30ea456ecc714935814b906d295a9af74f2108e5
+[AEGIS EXECUTION] Waiting for confirmation...
+[AEGIS SUCCESS] Transaction confirmed in block 98113728
+[AEGIS INFO] [1903e4d7] action_executed: automation sent payment to 0xaf2F12A3497bc5B74896E943645A8FEFdeD378e3
+[AEGIS Runtime] Automation 1903e4d7-e64a-4886-bf06-6c36ed1b8297 marked as COMPLETED (run-once).
+INFO:     127.0.0.1:49827 - "GET /automations/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49827 - "GET /automations/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49827 - "GET /automations/executor/address HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54126 - "GET /automations/executor/address HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54126 - "GET /automations/executor/address HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49827 - "GET /automations/executor/address HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52002 - "GET /models HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52002 - "GET /models HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52002 - "GET /automations/executor/address HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52002 - "GET /automations/executor/address HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52002 - "GET /automations/executor/address HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52002 - "GET /automations/executor/address HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57295 - "GET /automations/executor/address HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57295 - "GET /automations/executor/address HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57295 - "GET /automations/executor/address HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57560 - "GET /automations/executor/address HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57560 - "GET /automations/executor/address HTTP/1.1" 200 OK

@@ -73,23 +73,23 @@ def _normalize_spec_json(spec: Dict[str, Any]) -> Dict[str, Any]:
     if isinstance(spec.get("trigger"), dict):
         trigger_params = spec["trigger"].get("params", {})
     
-    # Detect BSC Testnet from token/asset mentions
+    # Detect Monad Testnet from token/asset mentions
     token = str(trigger_params.get("token", "")).lower()
     asset = str(trigger_params.get("asset", "")).lower()
     chain_name = str(chain_info.get("name", "")).lower()
     rpc = str(chain_info.get("rpc", ""))
     
-    needs_bsc = (
-        token in ["tbnb", "bnb", "bsc"] or
-        asset in ["tbnb", "bnb", "bsc"] or
+    needs_monad = (
+        token in ["mon", "monad"] or
+        asset in ["mon", "monad"] or
         chain_name == "unknown" or
         not rpc
     )
     
-    if needs_bsc:
+    if needs_monad:
         spec["chain"] = {
-            "name": "BSC Testnet",
-            "rpc": "https://data-seed-prebsc-1-s1.bnbchain.org:8545"
+            "name": "Monad Testnet",
+            "rpc": "https://testnet-rpc.monad.xyz"
         }
     
     # Clean action params: only keep relevant fields per action type
