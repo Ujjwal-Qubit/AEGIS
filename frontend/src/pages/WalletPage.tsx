@@ -5,7 +5,7 @@ import { WithdrawFundsPanel } from '../components/onboarding/WithdrawFundsPanel'
 import { DangerZoneCard } from '../components/wallet/DangerZoneCard';
 import { useAccount } from 'wagmi';
 import { Navigate } from 'react-router-dom';
-import { ShieldCheck, Database, LayoutDashboard, Terminal } from 'lucide-react';
+import { ShieldCheck, Database, Terminal } from 'lucide-react';
 import { Button } from '../components/ui/UIPack';
 
 export default function WalletPage() {
